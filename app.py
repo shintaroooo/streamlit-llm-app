@@ -87,8 +87,8 @@ if st.button(ui["send"]) and st.session_state.user_input.strip() != "":
         # --- ストリーミング表示＆保存 ---
         streamed_text = ""
         for chunk in response:
-            streamed_text += chunk["choices"][0]["delta"].get("content", "")
-            st.markdown(f"🤖 {streamed_text}")
+            streamed_text += chunk
+            response_container.markdown(f"🤖 {streamed_text}")
         st.session_state.messages.append(AIMessage(content=streamed_text))
 
     # --- 入力欄をリセットして再描画 ---
