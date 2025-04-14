@@ -33,17 +33,16 @@ st.markdown(ui["instruction"])
 
 # --- 専門家選択 ---
 expert_type = st.radio("🧑‍🎓 専門家を選んでください:", ("心理カウンセラー", "経営コンサルタント", "パーソナルトレーナー"), key="expert_type")
-
 st.markdown(f"✅ **{ui['current_expert']} {expert_type}**")
 
-# --- セッションステートの初期化 ---
+# --- セッションステート初期化 ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 if "user_input" not in st.session_state:
     st.session_state.user_input = ""
 
-# --- システムメッセージ（専門家 & 言語で切り替え） ---
+# --- システムメッセージ生成関数（多言語対応） ---
 def get_system_message(expert: str, lang: str) -> str:
     prompts = {
         "日本語": {
@@ -59,7 +58,7 @@ def get_system_message(expert: str, lang: str) -> str:
     }
     return prompts[lang].get(expert, "You are a helpful AI assistant.")
 
-# --- SystemMessage 更新チェック ---
+# --- SystemMessage 初期化 or 専門家変更時に更新 ---
 system_msg = SystemMessage(content=get_system_message(expert_type, language))
 if len(st.session_state.messages) == 0 or (
     isinstance(st.session_state.messages[0], SystemMessage)
@@ -67,29 +66,29 @@ if len(st.session_state.messages) == 0 or (
 ):
     st.session_state.messages = [system_msg]
 
-# --- チャット履歴表示（SystemMessage除外） ---
+# --- チャット履歴表示（SystemMessage以外） ---
 for msg in st.session_state.messages[1:]:
     if isinstance(msg, HumanMessage):
         st.markdown(f"🧑 {msg.content}")
     elif isinstance(msg, AIMessage):
         st.markdown(f"🤖 {msg.content}")
 
-# --- 入力欄と送信処理 ---
+# --- 入力欄 ---
 st.text_input(ui["input_placeholder"], key="user_input")
 
+# --- 送信処理 ---
 if st.button(ui["send"]) and st.session_state.user_input.strip() != "":
     user_msg = st.session_state.user_input.strip()
     st.session_state.messages.append(HumanMessage(content=user_msg))
 
     with st.spinner(ui["thinking"]):
-        # --- ストリーミング表示 ---
         chat = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.5, streaming=True)
         response = chat.stream(st.session_state.messages)
 
-        # ストリーミング表示＆保存
+        # --- ストリーミング表示＆保存 ---
         streamed_text = st.write_stream(response)
         st.session_state.messages.append(AIMessage(content=streamed_text))
 
-    # 入力欄を空にリセットして再描画
+    # --- 入力欄をリセットして再描画 ---
     st.session_state.user_input = ""
     st.rerun()
