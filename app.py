@@ -3,9 +3,8 @@ from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage, AIMessage
 
 # --- ページ設定 ---
-st.set_page_config(page_title=ui["title"], layout="centered")
-st.title(ui["title"])
-st.markdown(ui["instruction"])
+st.set_page_config(page_title="専門家AIチャット", layout="centered")
+st.title("🧠 専門家AIチャット")
 
 # --- 言語選択 ---
 language = st.radio("🌐 Language / 言語を選択してください:", ("日本語", "English"), horizontal=True)
