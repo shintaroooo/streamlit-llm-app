@@ -66,6 +66,7 @@ if len(st.session_state.messages) == 0 or (
     st.session_state.messages = [system_msg]
 
 # --- チャット履歴表示（SystemMessage以外） ---
+response_container = st.empty()  # Define a placeholder for streaming responses
 for msg in st.session_state.messages[1:]:
     if isinstance(msg, HumanMessage):
         st.markdown(f"🧑 {msg.content}")
