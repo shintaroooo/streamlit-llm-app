@@ -66,7 +66,6 @@ if len(st.session_state.messages) == 0 or (
     st.session_state.messages = [system_msg]
 
 # --- チャット履歴表示（SystemMessage以外） ---
-response_container = st.empty()  # Define a placeholder for streaming responses
 for msg in st.session_state.messages[1:]:
     if isinstance(msg, HumanMessage):
         st.markdown(f"🧑 {msg.content}")
@@ -82,15 +81,20 @@ if st.button(ui["send"]) and st.session_state.user_input.strip() != "":
     st.session_state.messages.append(HumanMessage(content=user_msg))
 
     with st.spinner(ui["thinking"]):
-        chat = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.5, streaming=True)
-        response = chat.stream(st.session_state.messages)
+    chat = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.5, streaming=True)
+    response = chat.stream(st.session_state.messages)
 
-        # --- ストリーミング表示＆保存 ---
-        streamed_text = ""
-        for chunk in response:
-            streamed_text += chunk
-            response_container.markdown(f"🤖 {streamed_text}")
-        st.session_state.messages.append(AIMessage(content=streamed_text))
+    # 表示コンテナ
+    response_container = st.empty()
+    streamed_text = ""
+
+    for chunk in response:
+        streamed_text += chunk.text
+        response_container.markdown(f"🤖 {streamed_text}")
+
+    # 会話履歴に追加
+    st.session_state.messages.append(AIMessage(content=streamed_text))
+
 
     # --- 入力欄をリセットして再描画 ---
     st.session_state.user_input = ""
