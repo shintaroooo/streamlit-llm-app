@@ -38,8 +38,8 @@ tornado==6.4.2
 typing_extensions==4.13.2
 tzdata==2025.2
 urllib3==2.4.0
-streamlit==1.32.2
 openai==1.14.2
 langchain==0.0.340
 python-dotenv==1.0.1
+streamlit
 
