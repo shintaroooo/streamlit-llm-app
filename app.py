@@ -48,9 +48,9 @@ if st.button("送信") and user_input.strip() != "":
     st.session_state.messages.append(HumanMessage(content=user_input))
 
     # LLMに渡して応答生成
-    chat = ChatOpenAI(model="gpt-4.0-mini", temperature=0.5)
+    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.5)
     with st.spinner("AIが考えています..."):
-        response = chat(st.session_state.messages)
+        response = llm(st.session_state.messages)
     st.session_state.messages.append(AIMessage(content=response.content))
 
     # 再描画
