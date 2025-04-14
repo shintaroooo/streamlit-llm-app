@@ -2,6 +2,11 @@ import streamlit as st
 from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage, AIMessage
 
+# --- ページ設定 ---
+st.set_page_config(page_title=ui["title"], layout="centered")
+st.title(ui["title"])
+st.markdown(ui["instruction"])
+
 # --- 言語選択 ---
 language = st.radio("🌐 Language / 言語を選択してください:", ("日本語", "English"), horizontal=True)
 
@@ -25,11 +30,6 @@ labels = {
     }
 }
 ui = labels[language]
-
-# --- ページ設定 ---
-st.set_page_config(page_title=ui["title"], layout="centered")
-st.title(ui["title"])
-st.markdown(ui["instruction"])
 
 # --- 専門家選択 ---
 expert_type = st.radio("🧑‍🎓 専門家を選んでください:", ("心理カウンセラー", "経営コンサルタント", "パーソナルトレーナー"), key="expert_type")
