@@ -83,18 +83,11 @@ if st.button(ui["send"]) and st.session_state.user_input.strip() != "":
 
     with st.spinner(ui["thinking"]):
         # --- ストリーミング表示 ---
-        response_container = st.empty()
-        streamed_text = ""
         chat = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.5, streaming=True)
+        response = chat.stream(st.session_state.messages)
 
-        def stream_handler(chunk):
-            nonlocal streamed_text
-            streamed_text += chunk
-            response_container.markdown(f"🤖 {streamed_text}")
-
-        chat(st.session_state.messages, callbacks=[stream_handler])
-
-        # 完全な回答を保存
+        # ストリーミング表示＆保存
+        streamed_text = st.write_stream(response)
         st.session_state.messages.append(AIMessage(content=streamed_text))
 
     # 入力欄を空にリセットして再描画
