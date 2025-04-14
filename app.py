@@ -56,4 +56,4 @@ if st.button("送信") and user_input.strip() != "":
         chat = ChatOpenAI(model_name="gpt-4", temperature=0.5)  # Use a valid model name
         response = chat(st.session_state.messages)
     st.session_state.messages.append(AIMessage(content=response.content))
-    st.experimental_rerun()
+    st.rerun()
