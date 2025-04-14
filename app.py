@@ -1,5 +1,5 @@
 import streamlit as st
-from langchain_openai import ChatOpenAI  # ← 最新の書き方
+from langchain.chat_models import ChatOpenAI  # Correct import
 from langchain.schema import SystemMessage, HumanMessage, AIMessage
 
 # --- ページ設定 ---
@@ -53,7 +53,7 @@ user_input = st.text_input("💬 メッセージを入力してください", ke
 if st.button("送信") and user_input.strip() != "":
     st.session_state.messages.append(HumanMessage(content=user_input))
     with st.spinner("AIが回答を考えています..."):
-        chat = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.5)
+        chat = ChatOpenAI(model_name="gpt-4", temperature=0.5)  # Use a valid model name
         response = chat(st.session_state.messages)
     st.session_state.messages.append(AIMessage(content=response.content))
     st.experimental_rerun()
